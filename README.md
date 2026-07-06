@@ -6,7 +6,7 @@ Just pick an APK, fill in a few details (only the ones marked with `*` are manda
 
 ## Usage
 
-1. Open **[System Moduler](https://anemia004.github.io/system-moduler/)** in your browser.
+1. Open **[System Moduler](https://anemia004.github.io/System-App-Moduler/)** in your browser.
 2. Select an APK file **(\* required)**.
 3. Enter a **Module ID** **(\* required)** – unique, no spaces. This determines the internal folder and prevents conflicts between modules.
 4. (Optional) Fill in Module Name, Version, Version Code, and Author.  
