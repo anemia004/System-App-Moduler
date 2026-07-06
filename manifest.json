@@ -1,0 +1,15 @@
+{
+    "name": "System Moduler",
+    "short_name": "Moduler",
+    "start_url": "index.html",
+    "display": "standalone",
+    "background_color": "#008080",
+    "theme_color": "#008080",
+    "icons": [
+        {
+            "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAFklEQVQoFWP8////fwYqYBSMglEwCkYBAAAAw+mAHQMAAADq0FkFAAAAAElFTkSuQmCC",
+            "sizes": "16x16",
+            "type": "image/png"
+        }
+    ]
+}
