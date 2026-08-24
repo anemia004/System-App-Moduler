@@ -1,14 +1,25 @@
 {
     "name": "System Moduler",
     "short_name": "Moduler",
-    "start_url": "index.html",
+    "description": "Generate Magisk modules from APK files – privacy-focused, offline.",
+    "start_url": "./index.html",
     "display": "standalone",
-    "background_color": "#008080",
-    "theme_color": "#008080",
+    "background_color": "#000000",
+    "theme_color": "#00ff41",
     "icons": [
         {
             "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAFklEQVQoFWP8////fwYqYBSMglEwCkYBAAAAw+mAHQMAAADq0FkFAAAAAElFTkSuQmCC",
             "sizes": "16x16",
+            "type": "image/png"
+        },
+        {
+            "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAFklEQVQoFWP8////fwYqYBSMglEwCkYBAAAAw+mAHQMAAADq0FkFAAAAAElFTkSuQmCC",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAFklEQVQoFWP8////fwYqYBSMglEwCkYBAAAAw+mAHQMAAADq0FkFAAAAAElFTkSuQmCC",
+            "sizes": "512x512",
             "type": "image/png"
         }
     ]
