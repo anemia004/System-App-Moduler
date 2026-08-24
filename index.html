@@ -1,1 +1,967 @@
-update soon
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes" />
+    <title>System Moduler – Matrix Glass</title>
+
+    <!-- Local JSZip -->
+    <script src="jszip.min.js"></script>
+
+    <style>
+        /* ============ RESET & BASE ============ */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            padding: clamp(8px, 2vw, 24px);
+            min-height: 100dvh;
+            overflow: hidden;
+        }
+
+        #matrixCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: block;
+            z-index: 0;
+            background: #000;
+        }
+
+        /* ============ LIQUID GLASS WRAPPER ============ */
+        .liquidGlass-wrapper {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            font-weight: 600;
+            overflow: hidden;
+            box-shadow: 0 6px 6px rgba(0,0,0,0.4), 0 0 30px rgba(0,255,0,0.08);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 2.2);
+            width: min(100%, 600px);
+            max-height: min(92dvh, 700px);
+            border-radius: clamp(1.5rem, 4vw, 2.5rem);
+            flex-shrink: 0;
+        }
+
+        .liquidGlass-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(0,255,0,0.2), rgba(0,255,0,0.05), rgba(0,255,0,0.2));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .liquidGlass-wrapper>div {
+            border-radius: inherit;
+        }
+
+        @media (hover: hover) {
+            .dock:hover {
+                padding: 0.8rem;
+                border-radius: clamp(1.8rem, 4.5vw, 3rem);
+            }
+            .dock:hover>div {
+                border-radius: clamp(1.8rem, 4.5vw, 3rem);
+            }
+        }
+
+        .liquidGlass-effect {
+            position: absolute;
+            z-index: 0;
+            inset: 0;
+            backdrop-filter: blur(3px);
+            filter: url(#glass-distortion);
+            overflow: hidden;
+            border-radius: inherit;
+        }
+
+        .liquidGlass-tint {
+            z-index: 1;
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.50);
+            border-radius: inherit;
+        }
+
+        .liquidGlass-shine {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            overflow: hidden;
+            box-shadow: inset 2px 2px 1px 0 rgba(255,255,255,0.12),
+                        inset -1px -1px 1px 1px rgba(255,255,255,0.06);
+            border-radius: inherit;
+            pointer-events: none;
+        }
+
+        .liquidGlass-text {
+            position: relative;
+            z-index: 3;
+            width: 100%;
+            padding: clamp(16px, 3.5vw, 32px) clamp(14px, 3vw, 28px) clamp(16px, 3.5vw, 28px);
+            overflow-y: auto;
+            flex: 1 1 auto;
+            font-size: 1rem;
+            color: #fff;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0,255,0,0.25) rgba(255,255,255,0.05);
+        }
+
+        .liquidGlass-text::-webkit-scrollbar {
+            width: 4px;
+        }
+        .liquidGlass-text::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+        }
+        .liquidGlass-text::-webkit-scrollbar-thumb {
+            background: rgba(0,255,0,0.3);
+            border-radius: 10px;
+        }
+
+        /* ============ FORM CONTAINER ============ */
+        .form-container {
+            width: 100%;
+            max-width: 440px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: clamp(10px, 2vw, 16px);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+        }
+
+        .form-container h2 {
+            margin: 0 0 2px 0;
+            font-weight: 700;
+            font-size: clamp(1.4rem, 4vw, 2rem);
+            text-align: center;
+            color: #fff;
+            letter-spacing: 0.02em;
+            font-family: 'Orbitron', sans-serif;
+            line-height: 1.2;
+            text-shadow:
+                0 0 10px rgba(0,255,0,0.3),
+                0 0 20px rgba(0,255,0,0.15),
+                0 0 40px rgba(0,255,0,0.1);
+            position: relative;
+        }
+        .form-container h2::before,
+        .form-container h2::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        .form-container h2::before {
+            color: #0f0;
+            z-index: -1;
+            animation: glitch1 3s infinite linear alternate-reverse;
+        }
+        .form-container h2::after {
+            color: #0ff;
+            z-index: -2;
+            animation: glitch2 2s infinite linear alternate-reverse;
+        }
+        @keyframes glitch1 {
+            0%, 90%, 100% { clip-path: inset(0 0 100% 0); transform: translate(0); }
+            95% { clip-path: inset(10% 0 60% 0); transform: translate(-2px, 1px); }
+            97% { clip-path: inset(40% 0 20% 0); transform: translate(2px, -1px); }
+        }
+        @keyframes glitch2 {
+            0%, 85%, 100% { clip-path: inset(100% 0 0 0); transform: translate(0); }
+            90% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
+            93% { clip-path: inset(20% 0 50% 0); transform: translate(-2px, 1px); }
+        }
+
+        .form-container h2 small {
+            font-weight: 400;
+            font-size: clamp(0.7rem, 1.8vw, 0.9rem);
+            color: rgba(255,255,255,0.6);
+            display: block;
+            margin-top: 2px;
+            font-family: 'Share Tech Mono', monospace;
+            text-shadow: 0 0 8px rgba(0,255,0,0.3);
+            letter-spacing: 0.1em;
+        }
+
+        .field label {
+            font-size: clamp(0.65rem, 1.4vw, 0.8rem);
+            font-weight: 600;
+            color: rgba(0,255,0,0.85);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-family: 'Orbitron', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            text-shadow: 0 0 6px rgba(0,255,0,0.4);
+        }
+        .field label .req {
+            color: #ff6b6b;
+        }
+        .field label .hint {
+            font-weight: 400;
+            font-size: clamp(0.5rem, 1vw, 0.6rem);
+            color: rgba(255,255,255,0.45);
+            text-transform: none;
+            font-family: 'Share Tech Mono', monospace;
+            text-shadow: none;
+            letter-spacing: 0.05em;
+        }
+
+        .glass-input-wrapper input {
+            font-family: 'Share Tech Mono', monospace !important;
+            letter-spacing: 0.05em;
+        }
+
+        .glass-button-wrapper .btn-content {
+            letter-spacing: 0.08em;
+        }
+
+        .file-name {
+            font-family: 'Share Tech Mono', monospace;
+            letter-spacing: 0.03em;
+            color: rgba(255,255,255,0.6);
+            transition: color 0.2s;
+        }
+        .file-name.has-file {
+            color: rgba(0,255,0,0.8);
+            text-shadow: 0 0 6px rgba(0,255,0,0.3);
+        }
+
+        .status {
+            font-family: 'Share Tech Mono', monospace;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-size: clamp(0.7rem, 1.4vw, 0.8rem);
+        }
+        .status.success {
+            text-shadow: 0 0 8px rgba(0,255,0,0.5);
+        }
+        .status.error {
+            text-shadow: 0 0 8px rgba(255,107,107,0.5);
+        }
+
+        .glass-button {
+            text-shadow: 0 0 20px rgba(0,255,0,0.4), 0 0 40px rgba(0,255,0,0.2);
+            letter-spacing: 0.15em;
+        }
+
+        .glass-input-wrapper {
+            position: relative;
+            border-radius: clamp(12px, 2vw, 16px);
+            overflow: hidden;
+            isolation: isolate;
+            width: 100%;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(0,255,0,0.12);
+            transition: transform 0.2s ease, border-color 0.2s, box-shadow 0.2s;
+        }
+        .glass-input-wrapper:focus-within {
+            transform: scale(1.01);
+            border-color: rgba(0,255,0,0.4);
+            box-shadow: 0 0 20px rgba(0,255,0,0.1);
+        }
+
+        .glass-input-wrapper input {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            padding: clamp(12px, 2.2vw, 16px) clamp(12px, 2vw, 16px);
+            background: transparent;
+            border: none;
+            border-radius: inherit;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            color: #fff;
+            outline: none;
+            font-weight: 400;
+            min-height: 48px;
+        }
+
+        .glass-input-wrapper input::placeholder {
+            color: rgba(255,255,255,0.3);
+        }
+
+        .glass-button-wrapper {
+            position: relative;
+            border-radius: clamp(12px, 2vw, 16px);
+            overflow: hidden;
+            isolation: isolate;
+            width: 100%;
+            cursor: pointer;
+            background: rgba(0,255,0,0.06);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(0,255,0,0.15);
+            transition: transform 0.2s ease, background 0.2s, border-color 0.2s, box-shadow 0.2s;
+            min-height: 48px;
+        }
+        .glass-button-wrapper:hover {
+            transform: scale(1.01);
+            background: rgba(0,255,0,0.12);
+            border-color: rgba(0,255,0,0.3);
+            box-shadow: 0 0 15px rgba(0,255,0,0.1);
+        }
+        .glass-button-wrapper:active {
+            transform: scale(0.97);
+        }
+
+        .glass-button-wrapper .btn-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: clamp(12px, 2.2vw, 16px) clamp(12px, 2vw, 16px);
+            font-size: clamp(0.85rem, 2vw, 1rem);
+            font-weight: 600;
+            color: #fff;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: center;
+            text-transform: uppercase;
+            min-height: 48px;
+        }
+
+        .glass-button-wrapper input[type="file"] {
+            display: none;
+        }
+
+        .status {
+            padding: clamp(10px, 1.8vw, 14px) clamp(12px, 2vw, 16px);
+            border-radius: clamp(12px, 2vw, 16px);
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(2px);
+            border: 1px solid rgba(0,255,0,0.08);
+            min-height: clamp(44px, 8vh, 52px);
+            display: flex;
+            align-items: center;
+            color: rgba(255,255,255,0.9);
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .status .spinner {
+            display: none;
+            width: clamp(16px, 2.5vw, 20px);
+            height: clamp(16px, 2.5vw, 20px);
+            border: 2px solid rgba(0,255,0,0.2);
+            border-top-color: #0f0;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            flex-shrink: 0;
+        }
+        .status.building .spinner {
+            display: block;
+        }
+
+        .status .progress-bar {
+            display: none;
+            flex: 1;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-left: 8px;
+        }
+        .status.building .progress-bar {
+            display: block;
+        }
+        .status .progress-bar .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #0f0;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .status.success {
+            color: #5cf0b0;
+            background: rgba(0,184,148,0.15);
+            border-color: rgba(0,184,148,0.2);
+            animation: pulseSuccess 1.5s ease;
+        }
+        .status.error {
+            color: #ff6b6b;
+            background: rgba(255,107,107,0.15);
+            border-color: rgba(255,107,107,0.2);
+            animation: shakeError 0.5s ease;
+        }
+
+        @keyframes shakeError {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        @keyframes pulseSuccess {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .glass-button {
+            position: relative;
+            cursor: pointer;
+            outline: none;
+            width: 100%;
+            padding: clamp(14px, 2.8vw, 20px) clamp(16px, 3vw, 28px);
+            border-radius: 999px;
+            border: 1px solid rgba(0,255,0,0.2);
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 2.2);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+            margin-top: 2px;
+            font-family: 'Orbitron', sans-serif;
+            color: #0f0;
+            font-size: clamp(1.1rem, 3vw, 1.6rem);
+            font-weight: 600;
+            text-transform: uppercase;
+            min-height: clamp(52px, 8vh, 68px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .glass-button::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent);
+            transform: rotate(45deg) translateY(-100%);
+            transition: transform 0.6s ease;
+            pointer-events: none;
+        }
+
+        .glass-button:hover:not(:disabled) {
+            transform: scale(1.03);
+            border-color: rgba(0,255,0,0.5);
+            box-shadow: 0 8px 32px rgba(0,255,0,0.15);
+            background: rgba(0,255,0,0.1);
+        }
+        .glass-button:hover:not(:disabled)::after {
+            transform: rotate(45deg) translateY(100%);
+        }
+
+        .glass-button:active:not(:disabled) {
+            transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(0,255,0,0.2);
+        }
+
+        .glass-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .glass-button:focus-visible,
+        .glass-button-wrapper:focus-visible,
+        .glass-input-wrapper:focus-within {
+            outline: 2px solid rgba(0,255,0,0.6);
+            outline-offset: 2px;
+        }
+
+        /* ============ RESPONSIVE BREAKPOINTS ============ */
+
+        /* Mobile portrait (≤480px) */
+        @media (max-width: 480px) {
+            .liquidGlass-wrapper {
+                max-height: 88dvh;
+                border-radius: 1.2rem;
+            }
+            .liquidGlass-text {
+                padding: 14px 12px 16px;
+            }
+            .form-container {
+                gap: 8px;
+                max-width: 100%;
+            }
+            .glass-input-wrapper input {
+                padding: 10px 12px;
+                min-height: 40px;
+                font-size: 0.85rem;
+            }
+            .glass-button-wrapper .btn-content {
+                padding: 10px 12px;
+                min-height: 40px;
+                font-size: 0.8rem;
+            }
+            .glass-button {
+                padding: 12px 14px;
+                min-height: 44px;
+                font-size: 1rem;
+            }
+            .status {
+                min-height: 38px;
+                font-size: 0.7rem;
+                padding: 8px 10px;
+            }
+            .form-container h2 {
+                font-size: 1.3rem;
+            }
+            .field label {
+                font-size: 0.65rem;
+            }
+        }
+
+        /* Short screens / landscape phones */
+        @media (max-height: 600px) {
+            .liquidGlass-wrapper {
+                max-height: 80dvh;
+            }
+            .liquidGlass-text {
+                padding: 10px 10px 12px;
+            }
+            .form-container {
+                gap: 6px;
+            }
+            .glass-input-wrapper input,
+            .glass-button-wrapper .btn-content {
+                min-height: 36px;
+                padding: 8px 10px;
+                font-size: 0.8rem;
+            }
+            .glass-button {
+                min-height: 40px;
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+            .status {
+                min-height: 34px;
+                font-size: 0.65rem;
+                padding: 6px 8px;
+            }
+        }
+
+        /* Tablet (481–768px) */
+        @media (min-width: 481px) and (max-width: 768px) {
+            .liquidGlass-wrapper {
+                max-width: 520px;
+                max-height: 85dvh;
+            }
+        }
+
+        /* Large desktop (≥1200px) */
+        @media (min-width: 1200px) {
+            .liquidGlass-wrapper {
+                max-width: 640px;
+                max-height: 720px;
+            }
+            .liquidGlass-text {
+                padding: 34px 36px 32px;
+            }
+            .form-container {
+                gap: 18px;
+                max-width: 480px;
+            }
+            .glass-button {
+                font-size: 1.8rem;
+                padding: 22px 32px;
+            }
+            .glass-input-wrapper input {
+                padding: 16px 18px;
+                font-size: 1rem;
+            }
+            .glass-button-wrapper .btn-content {
+                padding: 16px 18px;
+                font-size: 1rem;
+            }
+        }
+
+        /* ============ SELF-HOSTED FONTS ============ */
+        @font-face {
+            font-family: 'Orbitron';
+            src: url('fonts/Orbitron-Regular.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'Inter';
+            src: url('fonts/Inter-Regular.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'Share Tech Mono';
+            src: url('fonts/ShareTechMono-Regular.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="matrixCanvas"></canvas>
+
+    <!-- SVG filter for glass distortion -->
+    <svg style="display: none">
+        <filter id="glass-distortion" x="0%" y="0%" width="100%" height="100%" filterUnits="objectBoundingBox">
+            <feTurbulence type="fractalNoise" baseFrequency="0.01 0.01" numOctaves="1" seed="5" result="turbulence" />
+            <feComponentTransfer in="turbulence" result="mapped">
+                <feFuncR type="gamma" amplitude="1" exponent="10" offset="0.5" />
+                <feFuncG type="gamma" amplitude="0" exponent="1" offset="0" />
+                <feFuncB type="gamma" amplitude="0" exponent="1" offset="0.5" />
+            </feComponentTransfer>
+            <feGaussianBlur in="turbulence" stdDeviation="3" result="softMap" />
+            <feSpecularLighting in="softMap" surfaceScale="5" specularConstant="1" specularExponent="100"
+                lighting-color="white" result="specLight">
+                <fePointLight x="-200" y="-200" z="300" />
+            </feSpecularLighting>
+            <feComposite in="specLight" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="litImage" />
+            <feDisplacementMap in="SourceGraphic" in2="softMap" scale="150" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+    </svg>
+
+    <!-- Liquid glass wrapper -->
+    <div class="liquidGlass-wrapper dock">
+        <div class="liquidGlass-effect"></div>
+        <div class="liquidGlass-tint"></div>
+        <div class="liquidGlass-shine"></div>
+
+        <div class="liquidGlass-text">
+            <div class="form-container">
+
+                <h2 data-text="System Moduler">
+                    System Moduler
+                    <small>Magisk module from APK</small>
+                </h2>
+
+                <!-- APK File -->
+                <div class="field">
+                    <label>APK file <span class="req">*</span></label>
+                    <div class="glass-button-wrapper" id="filePickerWrapper">
+                        <button class="btn-content" type="button" id="filePickerBtn">
+                            <span>📎 Choose APK</span>
+                        </button>
+                        <input type="file" id="apkFile" accept=".apk" required />
+                    </div>
+                    <div class="file-name" id="fileName">No file selected</div>
+                </div>
+
+                <!-- Module ID -->
+                <div class="field">
+                    <label>Module ID <span class="req">*</span> <span class="hint">(unique, no spaces)</span></label>
+                    <div class="glass-input-wrapper">
+                        <input type="text" id="moduleId" required placeholder="my_module" />
+                    </div>
+                </div>
+
+                <!-- Module Name -->
+                <div class="field">
+                    <label>Module Name</label>
+                    <div class="glass-input-wrapper">
+                        <input type="text" id="moduleName" placeholder="My Module" />
+                    </div>
+                </div>
+
+                <!-- Version -->
+                <div class="field">
+                    <label>Version</label>
+                    <div class="glass-input-wrapper">
+                        <input type="text" id="moduleVersion" placeholder="v1.0" />
+                    </div>
+                </div>
+
+                <!-- Version Code -->
+                <div class="field">
+                    <label>Version Code</label>
+                    <div class="glass-input-wrapper">
+                        <input type="text" id="moduleVersionCode" placeholder="1" />
+                    </div>
+                </div>
+
+                <!-- Author -->
+                <div class="field">
+                    <label>Author</label>
+                    <div class="glass-input-wrapper">
+                        <input type="text" id="moduleAuthor" placeholder="anemia004" />
+                    </div>
+                </div>
+
+                <!-- Status -->
+                <div class="status" id="statusText">
+                    <span class="spinner"></span>
+                    <span class="status-msg">Ready — click Generate to build</span>
+                    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                </div>
+
+                <!-- Generate Button -->
+                <button class="glass-button" id="generateBtn">
+                    Generate Zip
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============ MATRIX RAIN (MOVIE STYLE WITH MIRRORED CHARACTERS) ============
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height, columns, drops;
+
+        const chars = "アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz$#%&*+=<>/\\|";
+        const fontSize = 14;
+        const fadeDelay = 0.05;
+        const rainColor = '#00ff41';
+        const mirrorProbability = 0.2;
+
+        let matrixInterval;
+
+        function initMatrix() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            columns = Math.floor(width / fontSize);
+            drops = Array(columns).fill(1);
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = `rgba(0, 0, 0, ${fadeDelay})`;
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.fillStyle = rainColor;
+            ctx.font = fontSize + 'px "Share Tech Mono", monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+
+                if (Math.random() < mirrorProbability) {
+                    ctx.save();
+                    ctx.translate(x + fontSize/2, y);
+                    ctx.scale(-1, 1);
+                    ctx.fillText(text, -fontSize/2, 0);
+                    ctx.restore();
+                } else {
+                    ctx.fillText(text, x, y);
+                }
+
+                if (y > height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        function startMatrix() {
+            initMatrix();
+            if (matrixInterval) clearInterval(matrixInterval);
+            matrixInterval = setInterval(drawMatrix, 50);
+        }
+
+        window.addEventListener('resize', initMatrix);
+        startMatrix();
+
+        // ============ MODULE BUILDER ============
+        (function() {
+            const filePickerBtn = document.getElementById('filePickerBtn');
+            const fileInput = document.getElementById('apkFile');
+            const fileNameSpan = document.getElementById('fileName');
+
+            filePickerBtn.addEventListener('click', () => fileInput.click());
+
+            fileInput.addEventListener('change', () => {
+                if (fileInput.files.length) {
+                    const name = fileInput.files[0].name;
+                    fileNameSpan.textContent = name;
+                    fileNameSpan.classList.add('has-file');
+                    const displayName = name.length > 20 ? name.substring(0, 17) + '...' : name;
+                    filePickerBtn.innerHTML = `<span>📎 ${displayName}</span>`;
+                } else {
+                    fileNameSpan.textContent = 'No file selected';
+                    fileNameSpan.classList.remove('has-file');
+                    filePickerBtn.innerHTML = '<span>📎 Choose APK</span>';
+                }
+            });
+
+            const generateBtn = document.getElementById('generateBtn');
+            const statusEl = document.getElementById('statusText');
+            const statusMsg = statusEl.querySelector('.status-msg');
+            const progressFill = document.getElementById('progressFill');
+            const moduleIdInput = document.getElementById('moduleId');
+            const moduleNameInput = document.getElementById('moduleName');
+            const moduleVersionInput = document.getElementById('moduleVersion');
+            const moduleVersionCodeInput = document.getElementById('moduleVersionCode');
+            const moduleAuthorInput = document.getElementById('moduleAuthor');
+
+            function getInputValue(input, defaultVal) {
+                return input.value.trim() || defaultVal;
+            }
+
+            function sanitizeName(str) {
+                return str.replace(/[^a-zA-Z0-9._-]/g, '_');
+            }
+
+            const updateBinary = `#!/sbin/sh
+umask 022
+ui_print() { echo "$1"; }
+require_new_magisk() {
+  ui_print "*******************************"
+  ui_print " Please install Magisk v20.4+! "
+  ui_print "*******************************"
+  exit 1
+}
+OUTFD=$2
+ZIPFILE=$3
+mount /data 2>/dev/null
+[ -f /data/adb/magisk/util_functions.sh ] || require_new_magisk
+. /data/adb/magisk/util_functions.sh
+[ $MAGISK_VER_CODE -lt 20400 ] && require_new_magisk
+install_module
+exit 0`;
+
+            const updaterScript = "#MAGISK";
+
+            function buildCustomizeSh(apkDir, apkName) {
+                return `#!/sbin/sh
+APK_DIR="$MODPATH/${apkDir}"
+APK_FILE="$APK_DIR/${apkName}"
+chmod 755 "$APK_DIR"
+chmod 644 "$APK_FILE"`;
+            }
+
+            function buildModuleProp(id, name, version, versionCode, author) {
+                return `id=${id}
+name=${name}
+version=${version}
+versionCode=${versionCode}
+author=${author}
+description=Systemlessly installs a user-provided APK as a system app.`;
+            }
+
+            async function buildModule() {
+                if (!fileInput.files.length) {
+                    showStatus('❌ Please select an APK file (required).', 'error');
+                    return;
+                }
+                const moduleId = moduleIdInput.value.trim();
+                if (!moduleId) {
+                    showStatus('❌ Module ID is required (marked with *).', 'error');
+                    return;
+                }
+
+                const moduleName = getInputValue(moduleNameInput, moduleNameInput.placeholder || 'My Module');
+                const moduleVersion = getInputValue(moduleVersionInput, moduleVersionInput.placeholder || 'v1.0');
+                const moduleVersionCode = getInputValue(moduleVersionCodeInput, moduleVersionCodeInput.placeholder || '1');
+                const authorRaw = moduleAuthorInput.value.trim();
+                const moduleAuthor = authorRaw || 'anemia004';
+
+                const apkFile = fileInput.files[0];
+                const apkName = sanitizeName(apkFile.name);
+                const folderName = sanitizeName(moduleId);
+                const apkDir = `system/priv-app/${folderName}`;
+
+                generateBtn.disabled = true;
+                showStatus('⏳ Building module...', 'building');
+
+                let progress = 0;
+                const progressInterval = setInterval(() => {
+                    progress = Math.min(progress + Math.random() * 10, 90);
+                    progressFill.style.width = progress + '%';
+                }, 200);
+
+                try {
+                    const apkData = await apkFile.arrayBuffer();
+                    const zip = new JSZip();
+                    const metaDir = "META-INF/com/google/android/";
+                    zip.file(metaDir + "update-binary", updateBinary);
+                    zip.file(metaDir + "updater-script", updaterScript);
+                    zip.file("module.prop", buildModuleProp(moduleId, moduleName, moduleVersion, moduleVersionCode, moduleAuthor));
+                    zip.file("customize.sh", buildCustomizeSh(apkDir, apkName));
+                    zip.file(apkDir + "/" + apkName, apkData);
+
+                    const content = await zip.generateAsync({ type: "blob" });
+                    const url = URL.createObjectURL(content);
+
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `${moduleId}.zip`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+
+                    progressFill.style.width = '100%';
+                    setTimeout(() => {
+                        showStatus('✅ Module zip generated! Check your downloads.', 'success');
+                    }, 300);
+                } catch (error) {
+                    console.error(error);
+                    showStatus('❌ Error: ' + error.message, 'error');
+                } finally {
+                    clearInterval(progressInterval);
+                    generateBtn.disabled = false;
+                }
+            }
+
+            function showStatus(msg, type) {
+                statusMsg.textContent = msg;
+                statusEl.classList.remove('building', 'success', 'error');
+                void statusEl.offsetWidth;
+                if (type === 'building') {
+                    statusEl.classList.add('building');
+                    progressFill.style.width = '0%';
+                } else if (type === 'success') {
+                    statusEl.classList.add('success');
+                } else if (type === 'error') {
+                    statusEl.classList.add('error');
+                }
+            }
+
+            generateBtn.addEventListener('click', buildModule);
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !generateBtn.disabled) {
+                    e.preventDefault();
+                    buildModule();
+                }
+            });
+        })();
+    </script>
+</body>
+</html>
