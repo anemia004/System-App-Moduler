@@ -27,9 +27,9 @@ Just pick an APK, fill in a few details (only the ones marked with `*` are manda
   - `META-INF/com/google/android/updater-script`
   - `module.prop` – with the metadata you provide (or the defaults)
   - `customize.sh` – fixes file permissions after flashing
-  - `system/priv-app/<ModuleID>/<YourAPK>` – the APK itself
-- The generated module installs the APK as a privileged system app (via `/system/priv-app`), which allows it to retain required permissions even on modern Android versions.
-- The folder inside `priv-app` is named after your **Module ID**, so every module gets its own unique directory and never overwrites another.
+  - `system/app/<ModuleID>/<YourAPK>` – the APK itself
+- The generated module installs the APK as a **regular system app** (via `/system/app`), not as a privileged app.
+- The folder inside `app` is named after your **Module ID**, so every module gets its own unique directory and never overwrites another.
 
 ## Features
 
@@ -38,6 +38,14 @@ Just pick an APK, fill in a few details (only the ones marked with `*` are manda
 - **Unique folder names** – derived from your Module ID to avoid conflicts when multiple modules are flashed.
 - **Instant download** – the zip is generated directly in the browser and saved immediately.
 - **Systemless** – your actual `/system` partition is never modified; Magisk handles everything in memory.
+
+## ⚠️ Compatibility Note
+
+- This module **works on Android 9 and above**, provided you have **Magisk v20.4+** installed.
+- Due to increased security restrictions introduced after Android 9, some apps may **crash or behave unexpectedly** when installed as a system app via this method.  
+  This is because newer Android versions enforce stricter signature, permission, and SELinux rules that may not be satisfied by a simple APK overlay.
+- **This tool has not been extensively tested on Android versions beyond Android 9** – use at your own discretion.  
+  Future updates may address these issues, but for now, we recommend testing on a backup device first.
 
 ## Requirements
 
