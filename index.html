@@ -11,7 +11,8 @@
     <meta name="theme-color" content="#00ff41">
 
     <!-- Local JSZip -->
-    <script src="jszip.min.js"></script>
+    <script src="jszip.min.js">
+    </script>
 
     <style>
         /* ============ RESET & BASE ============ */
@@ -58,7 +59,7 @@
             flex-direction: column;
             font-weight: 600;
             overflow: hidden;
-            box-shadow: 0 6px 6px rgba(0,0,0,0.4), 0 0 30px rgba(0,255,0,0.08);
+            box-shadow: 0 6px 6px rgba(0, 0, 0, 0.4), 0 0 30px rgba(0, 255, 0, 0.08);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 2.2);
             width: min(100%, 600px);
             max-height: min(92dvh, 700px);
@@ -72,7 +73,7 @@
             inset: 0;
             border-radius: inherit;
             padding: 1px;
-            background: linear-gradient(135deg, rgba(0,255,0,0.2), rgba(0,255,0,0.05), rgba(0,255,0,0.2));
+            background: linear-gradient(135deg, rgba(0, 255, 0, 0.2), rgba(0, 255, 0, 0.05), rgba(0, 255, 0, 0.2));
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
             mask-composite: exclude;
@@ -108,7 +109,7 @@
             z-index: 1;
             position: absolute;
             inset: 0;
-            background: rgba(0,0,0,0.50);
+            background: rgba(0, 0, 0, 0.50);
             border-radius: inherit;
         }
 
@@ -117,8 +118,8 @@
             inset: 0;
             z-index: 2;
             overflow: hidden;
-            box-shadow: inset 2px 2px 1px 0 rgba(255,255,255,0.12),
-                        inset -1px -1px 1px 1px rgba(255,255,255,0.06);
+            box-shadow: inset 2px 2px 1px 0 rgba(255, 255, 255, 0.12),
+                inset -1px -1px 1px 1px rgba(255, 255, 255, 0.06);
             border-radius: inherit;
             pointer-events: none;
         }
@@ -133,18 +134,18 @@
             font-size: 1rem;
             color: #fff;
             scrollbar-width: thin;
-            scrollbar-color: rgba(0,255,0,0.25) rgba(255,255,255,0.05);
+            scrollbar-color: rgba(0, 255, 0, 0.25) rgba(255, 255, 255, 0.05);
         }
 
         .liquidGlass-text::-webkit-scrollbar {
             width: 4px;
         }
         .liquidGlass-text::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.05);
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
         }
         .liquidGlass-text::-webkit-scrollbar-thumb {
-            background: rgba(0,255,0,0.3);
+            background: rgba(0, 255, 0, 0.3);
             border-radius: 10px;
         }
 
@@ -170,10 +171,9 @@
             letter-spacing: 0.02em;
             font-family: 'Orbitron', sans-serif;
             line-height: 1.2;
-            text-shadow:
-                0 0 10px rgba(0,255,0,0.3),
-                0 0 20px rgba(0,255,0,0.15),
-                0 0 40px rgba(0,255,0,0.1);
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.3),
+                0 0 20px rgba(0, 255, 0, 0.15),
+                0 0 40px rgba(0, 255, 0, 0.1);
             position: relative;
         }
         .form-container h2::before,
@@ -197,38 +197,60 @@
             animation: glitch2 2s infinite linear alternate-reverse;
         }
         @keyframes glitch1 {
-            0%, 90%, 100% { clip-path: inset(0 0 100% 0); transform: translate(0); }
-            95% { clip-path: inset(10% 0 60% 0); transform: translate(-2px, 1px); }
-            97% { clip-path: inset(40% 0 20% 0); transform: translate(2px, -1px); }
+            0%,
+            90%,
+            100% {
+                clip-path: inset(0 0 100% 0);
+                transform: translate(0);
+            }
+            95% {
+                clip-path: inset(10% 0 60% 0);
+                transform: translate(-2px, 1px);
+            }
+            97% {
+                clip-path: inset(40% 0 20% 0);
+                transform: translate(2px, -1px);
+            }
         }
         @keyframes glitch2 {
-            0%, 85%, 100% { clip-path: inset(100% 0 0 0); transform: translate(0); }
-            90% { clip-path: inset(60% 0 10% 0); transform: translate(2px, -1px); }
-            93% { clip-path: inset(20% 0 50% 0); transform: translate(-2px, 1px); }
+            0%,
+            85%,
+            100% {
+                clip-path: inset(100% 0 0 0);
+                transform: translate(0);
+            }
+            90% {
+                clip-path: inset(60% 0 10% 0);
+                transform: translate(2px, -1px);
+            }
+            93% {
+                clip-path: inset(20% 0 50% 0);
+                transform: translate(-2px, 1px);
+            }
         }
 
         .form-container h2 small {
             font-weight: 400;
             font-size: clamp(0.7rem, 1.8vw, 0.9rem);
-            color: rgba(255,255,255,0.6);
+            color: rgba(255, 255, 255, 0.6);
             display: block;
             margin-top: 2px;
             font-family: 'Share Tech Mono', monospace;
-            text-shadow: 0 0 8px rgba(0,255,0,0.3);
+            text-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
             letter-spacing: 0.1em;
         }
 
         .field label {
             font-size: clamp(0.65rem, 1.4vw, 0.8rem);
             font-weight: 600;
-            color: rgba(0,255,0,0.85);
+            color: rgba(0, 255, 0, 0.85);
             text-transform: uppercase;
             letter-spacing: 0.1em;
             font-family: 'Orbitron', sans-serif;
             display: flex;
             align-items: center;
             gap: 4px;
-            text-shadow: 0 0 6px rgba(0,255,0,0.4);
+            text-shadow: 0 0 6px rgba(0, 255, 0, 0.4);
         }
         .field label .req {
             color: #ff6b6b;
@@ -236,7 +258,7 @@
         .field label .hint {
             font-weight: 400;
             font-size: clamp(0.5rem, 1vw, 0.6rem);
-            color: rgba(255,255,255,0.45);
+            color: rgba(255, 255, 255, 0.45);
             text-transform: none;
             font-family: 'Share Tech Mono', monospace;
             text-shadow: none;
@@ -255,12 +277,12 @@
         .file-name {
             font-family: 'Share Tech Mono', monospace;
             letter-spacing: 0.03em;
-            color: rgba(255,255,255,0.6);
+            color: rgba(255, 255, 255, 0.6);
             transition: color 0.2s;
         }
         .file-name.has-file {
-            color: rgba(0,255,0,0.8);
-            text-shadow: 0 0 6px rgba(0,255,0,0.3);
+            color: rgba(0, 255, 0, 0.8);
+            text-shadow: 0 0 6px rgba(0, 255, 0, 0.3);
         }
 
         .status {
@@ -270,14 +292,14 @@
             font-size: clamp(0.7rem, 1.4vw, 0.8rem);
         }
         .status.success {
-            text-shadow: 0 0 8px rgba(0,255,0,0.5);
+            text-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
         }
         .status.error {
-            text-shadow: 0 0 8px rgba(255,107,107,0.5);
+            text-shadow: 0 0 8px rgba(255, 107, 107, 0.5);
         }
 
         .glass-button {
-            text-shadow: 0 0 20px rgba(0,255,0,0.4), 0 0 40px rgba(0,255,0,0.2);
+            text-shadow: 0 0 20px rgba(0, 255, 0, 0.4), 0 0 40px rgba(0, 255, 0, 0.2);
             letter-spacing: 0.15em;
         }
 
@@ -287,15 +309,15 @@
             overflow: hidden;
             isolation: isolate;
             width: 100%;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(4px);
-            border: 1px solid rgba(0,255,0,0.12);
+            border: 1px solid rgba(0, 255, 0, 0.12);
             transition: transform 0.2s ease, border-color 0.2s, box-shadow 0.2s;
         }
         .glass-input-wrapper:focus-within {
             transform: scale(1.01);
-            border-color: rgba(0,255,0,0.4);
-            box-shadow: 0 0 20px rgba(0,255,0,0.1);
+            border-color: rgba(0, 255, 0, 0.4);
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.1);
         }
 
         .glass-input-wrapper input {
@@ -314,7 +336,7 @@
         }
 
         .glass-input-wrapper input::placeholder {
-            color: rgba(255,255,255,0.3);
+            color: rgba(255, 255, 255, 0.3);
         }
 
         .glass-button-wrapper {
@@ -324,17 +346,17 @@
             isolation: isolate;
             width: 100%;
             cursor: pointer;
-            background: rgba(0,255,0,0.06);
+            background: rgba(0, 255, 0, 0.06);
             backdrop-filter: blur(4px);
-            border: 1px solid rgba(0,255,0,0.15);
+            border: 1px solid rgba(0, 255, 0, 0.15);
             transition: transform 0.2s ease, background 0.2s, border-color 0.2s, box-shadow 0.2s;
             min-height: 48px;
         }
         .glass-button-wrapper:hover {
             transform: scale(1.01);
-            background: rgba(0,255,0,0.12);
-            border-color: rgba(0,255,0,0.3);
-            box-shadow: 0 0 15px rgba(0,255,0,0.1);
+            background: rgba(0, 255, 0, 0.12);
+            border-color: rgba(0, 255, 0, 0.3);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.1);
         }
         .glass-button-wrapper:active {
             transform: scale(0.97);
@@ -368,13 +390,13 @@
         .status {
             padding: clamp(10px, 1.8vw, 14px) clamp(12px, 2vw, 16px);
             border-radius: clamp(12px, 2vw, 16px);
-            background: rgba(0,0,0,0.3);
+            background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(2px);
-            border: 1px solid rgba(0,255,0,0.08);
+            border: 1px solid rgba(0, 255, 0, 0.08);
             min-height: clamp(44px, 8vh, 52px);
             display: flex;
             align-items: center;
-            color: rgba(255,255,255,0.9);
+            color: rgba(255, 255, 255, 0.9);
             gap: 10px;
             transition: all 0.3s;
         }
@@ -383,7 +405,7 @@
             display: none;
             width: clamp(16px, 2.5vw, 20px);
             height: clamp(16px, 2.5vw, 20px);
-            border: 2px solid rgba(0,255,0,0.2);
+            border: 2px solid rgba(0, 255, 0, 0.2);
             border-top-color: #0f0;
             border-radius: 50%;
             animation: spin 0.7s linear infinite;
@@ -397,7 +419,7 @@
             display: none;
             flex: 1;
             height: 4px;
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 2px;
             overflow: hidden;
             margin-left: 8px;
@@ -414,31 +436,46 @@
         }
 
         @keyframes spin {
-            to { transform: rotate(360deg); }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         .status.success {
             color: #5cf0b0;
-            background: rgba(0,184,148,0.15);
-            border-color: rgba(0,184,148,0.2);
+            background: rgba(0, 184, 148, 0.15);
+            border-color: rgba(0, 184, 148, 0.2);
             animation: pulseSuccess 1.5s ease;
         }
         .status.error {
             color: #ff6b6b;
-            background: rgba(255,107,107,0.15);
-            border-color: rgba(255,107,107,0.2);
+            background: rgba(255, 107, 107, 0.15);
+            border-color: rgba(255, 107, 107, 0.2);
             animation: shakeError 0.5s ease;
         }
 
         @keyframes shakeError {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-5px);
+            }
+            75% {
+                transform: translateX(5px);
+            }
         }
         @keyframes pulseSuccess {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.02);
+            }
+            100% {
+                transform: scale(1);
+            }
         }
 
         .glass-button {
@@ -448,11 +485,11 @@
             width: 100%;
             padding: clamp(14px, 2.8vw, 20px) clamp(16px, 3vw, 28px);
             border-radius: 999px;
-            border: 1px solid rgba(0,255,0,0.2);
-            background: rgba(0,0,0,0.4);
+            border: 1px solid rgba(0, 255, 0, 0.2);
+            background: rgba(0, 0, 0, 0.4);
             backdrop-filter: blur(4px);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 2.2);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
             margin-top: 2px;
             font-family: 'Orbitron', sans-serif;
             color: #0f0;
@@ -473,7 +510,7 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.05), transparent);
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.05), transparent);
             transform: rotate(45deg) translateY(-100%);
             transition: transform 0.6s ease;
             pointer-events: none;
@@ -481,9 +518,9 @@
 
         .glass-button:hover:not(:disabled) {
             transform: scale(1.03);
-            border-color: rgba(0,255,0,0.5);
-            box-shadow: 0 8px 32px rgba(0,255,0,0.15);
-            background: rgba(0,255,0,0.1);
+            border-color: rgba(0, 255, 0, 0.5);
+            box-shadow: 0 8px 32px rgba(0, 255, 0, 0.15);
+            background: rgba(0, 255, 0, 0.1);
         }
         .glass-button:hover:not(:disabled)::after {
             transform: rotate(45deg) translateY(100%);
@@ -491,7 +528,7 @@
 
         .glass-button:active:not(:disabled) {
             transform: scale(0.95);
-            box-shadow: 0 2px 8px rgba(0,255,0,0.2);
+            box-shadow: 0 2px 8px rgba(0, 255, 0, 0.2);
         }
 
         .glass-button:disabled {
@@ -503,7 +540,7 @@
         .glass-button:focus-visible,
         .glass-button-wrapper:focus-visible,
         .glass-input-wrapper:focus-within {
-            outline: 2px solid rgba(0,255,0,0.6);
+            outline: 2px solid rgba(0, 255, 0, 0.6);
             outline-offset: 2px;
         }
 
@@ -649,8 +686,7 @@
                 <feFuncB type="gamma" amplitude="0" exponent="1" offset="0.5" />
             </feComponentTransfer>
             <feGaussianBlur in="turbulence" stdDeviation="3" result="softMap" />
-            <feSpecularLighting in="softMap" surfaceScale="5" specularConstant="1" specularExponent="100"
-                lighting-color="white" result="specLight">
+            <feSpecularLighting in="softMap" surfaceScale="5" specularConstant="1" specularExponent="100" lighting-color="white" result="specLight">
                 <fePointLight x="-200" y="-200" z="300" />
             </feSpecularLighting>
             <feComposite in="specLight" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="litImage" />
@@ -778,9 +814,9 @@
 
                 if (Math.random() < mirrorProbability) {
                     ctx.save();
-                    ctx.translate(x + fontSize/2, y);
+                    ctx.translate(x + fontSize / 2, y);
                     ctx.scale(-1, 1);
-                    ctx.fillText(text, -fontSize/2, 0);
+                    ctx.fillText(text, -fontSize / 2, 0);
                     ctx.restore();
                 } else {
                     ctx.fillText(text, x, y);
@@ -843,40 +879,40 @@
             }
 
             const updateBinary = `#!/sbin/sh
-umask 022
-ui_print() { echo "$1"; }
-require_new_magisk() {
-  ui_print "*******************************"
-  ui_print " Please install Magisk v20.4+! "
-  ui_print "*******************************"
-  exit 1
-}
-OUTFD=$2
-ZIPFILE=$3
-mount /data 2>/dev/null
-[ -f /data/adb/magisk/util_functions.sh ] || require_new_magisk
-. /data/adb/magisk/util_functions.sh
-[ $MAGISK_VER_CODE -lt 20400 ] && require_new_magisk
-install_module
-exit 0`;
+        umask 022
+        ui_print() { echo "$1"; }
+        require_new_magisk() {
+          ui_print "*******************************"
+          ui_print " Please install Magisk v20.4+! "
+          ui_print "*******************************"
+          exit 1
+        }
+        OUTFD=$2
+        ZIPFILE=$3
+        mount /data 2>/dev/null
+        [ -f /data/adb/magisk/util_functions.sh ] || require_new_magisk
+        . /data/adb/magisk/util_functions.sh
+        [ $MAGISK_VER_CODE -lt 20400 ] && require_new_magisk
+        install_module
+        exit 0`;
 
             const updaterScript = "#MAGISK";
 
             function buildCustomizeSh(apkDir, apkName) {
                 return `#!/sbin/sh
-APK_DIR="$MODPATH/${apkDir}"
-APK_FILE="$APK_DIR/${apkName}"
-chmod 755 "$APK_DIR"
-chmod 644 "$APK_FILE"`;
+        APK_DIR="$MODPATH/${apkDir}"
+        APK_FILE="$APK_DIR/${apkName}"
+        chmod 755 "$APK_DIR"
+        chmod 644 "$APK_FILE"`;
             }
 
             function buildModuleProp(id, name, version, versionCode, author) {
                 return `id=${id}
-name=${name}
-version=${version}
-versionCode=${versionCode}
-author=${author}
-description=Systemlessly installs a user-provided APK as a system app.`;
+        name=${name}
+        version=${version}
+        versionCode=${versionCode}
+        author=${author}
+        description=Systemlessly installs a user-provided APK as a system app.`;
             }
 
             async function buildModule() {
@@ -899,7 +935,8 @@ description=Systemlessly installs a user-provided APK as a system app.`;
                 const apkFile = fileInput.files[0];
                 const apkName = sanitizeName(apkFile.name);
                 const folderName = sanitizeName(moduleId);
-                const apkDir = `system/priv-app/${folderName}`;
+                // 🔁 Changed from priv-app to app — installs as regular system app
+                const apkDir = `system/app/${folderName}`;
 
                 generateBtn.disabled = true;
                 showStatus('⏳ Building module...', 'building');
@@ -916,7 +953,8 @@ description=Systemlessly installs a user-provided APK as a system app.`;
                     const metaDir = "META-INF/com/google/android/";
                     zip.file(metaDir + "update-binary", updateBinary);
                     zip.file(metaDir + "updater-script", updaterScript);
-                    zip.file("module.prop", buildModuleProp(moduleId, moduleName, moduleVersion, moduleVersionCode, moduleAuthor));
+                    zip.file("module.prop", buildModuleProp(moduleId, moduleName, moduleVersion, moduleVersionCode,
+                    moduleAuthor));
                     zip.file("customize.sh", buildCustomizeSh(apkDir, apkName));
                     zip.file(apkDir + "/" + apkName, apkData);
 
